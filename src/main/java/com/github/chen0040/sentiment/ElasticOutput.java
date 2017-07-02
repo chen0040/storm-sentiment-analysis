@@ -26,7 +26,7 @@ import storm.trident.operation.BaseFilter;
 import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 
-public class CreateESIndex extends BaseFilter{
+public class ElasticOutput extends BaseFilter{
 
 	private static final long serialVersionUID = 1L;
 	private int esIndex=1;
@@ -45,7 +45,6 @@ public class CreateESIndex extends BaseFilter{
 	"}";
 
 	public boolean isKeep(TridentTuple tuple) {
-		// TODO Auto-generated method stub
 		Boolean prediction =tuple.getBooleanByField("prediction");
 		String comment=tuple.getStringByField("text");
 		System.out.println(comment + " >> " + prediction);

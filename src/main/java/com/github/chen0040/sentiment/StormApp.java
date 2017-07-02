@@ -14,7 +14,7 @@ import backtype.storm.tuple.Fields;
  * Hello world!
  *
  */
-public class App 
+public class StormApp
 {
     public static void main( String[] args )
     {
@@ -42,7 +42,7 @@ public class App
     	
     	topology.newStream("classifyAndIndex", spout)
                 .each(new Fields("text"), new TwitterSentimentClassifier(), new Fields("prediction"))
-                .each(new Fields("text", "prediction"), new CreateESIndex());
+                .each(new Fields("text", "prediction"), new ElasticOutput());
     	
     	return topology.build();
     }

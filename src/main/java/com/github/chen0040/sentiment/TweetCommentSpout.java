@@ -35,7 +35,7 @@ public class TweetCommentSpout implements IBatchSpout {
 			while((line=br.readLine())!=null)
 			{
 				String[] values = line.split(",");
-				Integer label=Integer.parseInt(values[0]);
+				Boolean label=Integer.parseInt(values[0]) == 1;
 				String text=values[1];
 //				TextTokenizer tokenizer=new EnglishTokenizer();
 //				List<String> tokens = tokenizer.tokenize(text);
