@@ -70,12 +70,14 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.define "kafka1" do |kafka1|
+        kafka1.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/kafka/hosts.1 >> /etc/hosts"
         kafka1.vm.provision "shell", inline: "wget http://www-eu.apache.org/dist/kafka/0.11.0.0/kafka_2.11-0.11.0.0.tgz"
-        kafka1.vm.provision "shell", inline: "tar -xvzf kafka_2.11-0.11.0.0.tgz"
-        kafka1.vm.provision "shell", inline: "sudo cp -R /home/vagrant/kafka_2.11-0.11.0.0 /opt"
-        kafka1.vm.provision "shell", inline: "sudo ln -s /opt/kafka_2.11-0.10.0.1 /opt/kafka"
-        kafka1.vm.provision "shell", inline: "sudo cp /home/vagrant/devops/kafka/init.d /etc/init.d/kafka"
-        kafka1.vm.provision "shell", inline: "sudo chmod 755 /etc/init.d/kafka"
+        kafka1.vm.provision "shell", inline: "tar -xvzf kafka_2.11-0.11.0.0.tgz --strip 1"
+        kafka1.vm.provision "shell", inline: "cp -R /home/vagrant/kafka_2.11-0.11.0.0 /opt"
+        kafka1.vm.provision "shell", inline: "ln -s /opt/kafka_2.11-0.10.0.1 /opt/kafka"
+        kafka1.vm.provision "shell", inline: "echo \"delete.topic.enable = true\" >> /opt/kafka/config/server.properties"
+        kafka1.vm.provision "shell", inline: "cp /home/vagrant/devops/kafka/init.d /etc/init.d/kafka"
+        kafka1.vm.provision "shell", inline: "chmod 755 /etc/init.d/kafka"
         kafka1.vm.provision "shell", inline: "sudo update-rc.d kafka defaults"
         kafka1.vm.provision "shell", inline: "sudo service kafka start"
     end
