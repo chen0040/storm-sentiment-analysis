@@ -19,6 +19,11 @@ Vagrant.configure("2") do |config|
         zoo3.vm.hostname = "zoo3"
     end
 
+    config.vm.define "kafka1" do |kafka1|
+        kafka1.vm.network "private_network", ip: vagrantConfig['ip4']
+        kafka1.vm.hostname = "kafka1"
+    end
+
     config.vm.synced_folder "src/", "/home/vagrant/src", owner:"vagrant", group: "vagrant"
     config.vm.synced_folder "devops/", "/home/vagrant/devops", owner:"vagrant", group: "vagrant"
 
@@ -37,31 +42,42 @@ Vagrant.configure("2") do |config|
     config.vm.provision "shell", inline: "sudo apt-get install oracle-java8-installer -y"
 
 
-
-    config.vm.provision "shell", inline: "sudo apt-get install zookeeper -y"
-    config.vm.provision "shell", inline: "sudo apt-get install zookeeperd -y"
-
-
-
     config.vm.define "zoo1" do |zoo1|
-        zoo1.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/hosts.1 >> /etc/hosts"
+        zoo1.vm.provision "shell", inline: "sudo apt-get install zookeeper -y"
+        zoo1.vm.provision "shell", inline: "sudo apt-get install zookeeperd -y"
+        zoo1.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zookeeper/hosts.1 >> /etc/hosts"
         zoo1.vm.provision "shell", inline: "echo 1 > /etc/zookeeper/conf/myid"
-        zoo1.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zk1.cfg >> /etc/zookeeper/conf/zoo.cfg"
+        zoo1.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zookeeper/zk1.cfg >> /etc/zookeeper/conf/zoo.cfg"
         zoo1.vm.provision "shell", inline: "sudo service zookeeper restart"
     end
 
     config.vm.define "zoo2" do |zoo2|
-        zoo2.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/hosts.2 >> /etc/hosts"
+        zoo2.vm.provision "shell", inline: "sudo apt-get install zookeeper -y"
+        zoo2.vm.provision "shell", inline: "sudo apt-get install zookeeperd -y"
+        zoo2.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zookeeper/hosts.2 >> /etc/hosts"
         zoo2.vm.provision "shell", inline: "echo 2 > /etc/zookeeper/conf/myid"
-        zoo2.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zk2.cfg >> /etc/zookeeper/conf/zoo.cfg"
+        zoo2.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zookeeper/zk2.cfg >> /etc/zookeeper/conf/zoo.cfg"
         zoo2.vm.provision "shell", inline: "sudo service zookeeper restart"
     end
 
     config.vm.define "zoo3" do |zoo3|
-        zoo3.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/hosts.3 >> /etc/hosts"
+        zoo3.vm.provision "shell", inline: "sudo apt-get install zookeeper -y"
+        zoo3.vm.provision "shell", inline: "sudo apt-get install zookeeperd -y"
+        zoo3.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zookeeper/hosts.3 >> /etc/hosts"
         zoo3.vm.provision "shell", inline: "echo 3 > /etc/zookeeper/conf/myid"
-        zoo3.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zk3.cfg >> /etc/zookeeper/conf/zoo.cfg"
+        zoo3.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/zookeeper/zk3.cfg >> /etc/zookeeper/conf/zoo.cfg"
         zoo3.vm.provision "shell", inline: "sudo service zookeeper restart"
+    end
+
+    config.vm.define "kafka1" do |kafka1|
+        kafka1.vm.provision "shell", inline: "wget http://www-eu.apache.org/dist/kafka/0.11.0.0/kafka_2.11-0.11.0.0.tgz"
+        kafka1.vm.provision "shell", inline: "tar -xvzf kafka_2.11-0.11.0.0.tgz"
+        kafka1.vm.provision "shell", inline: "sudo cp -R /home/vagrant/kafka_2.11-0.11.0.0 /opt"
+        kafka1.vm.provision "shell", inline: "sudo ln -s /opt/kafka_2.11-0.10.0.1 /opt/kafka"
+        kafka1.vm.provision "shell", inline: "sudo cp /home/vagrant/devops/kafka/init.d /etc/init.d/kafka"
+        kafka1.vm.provision "shell", inline: "sudo chmod 755 /etc/init.d/kafka"
+        kafka1.vm.provision "shell", inline: "sudo update-rc.d kafka defaults"
+        kafka1.vm.provision "shell", inline: "sudo service kafka start"
     end
 
 
