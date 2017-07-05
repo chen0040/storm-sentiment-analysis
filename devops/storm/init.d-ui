@@ -1,7 +1,7 @@
 #!/bin/bash
 
-DAEMON_PATH=/opt/kafka/bin
-DAEMON_NAME=kafka
+DAEMON_PATH=/opt/storm/bin
+DAEMON_NAME=storm-ui
 # Check that networking is up.
 #[ ${NETWORKING} = "no" ] && exit 0
 
@@ -12,17 +12,17 @@ case "$1" in
   start)
         # Start daemon.
         echo "Starting $DAEMON_NAME";
-        nohup $DAEMON_PATH/kafka-server-start.sh -daemon /opt/kafka/config/server.properties
+        $DAEMON_PATH/storm ui
         ;;
   stop)
         # Stop daemons.
         echo "Shutting down $DAEMON_NAME";
-        pid=`ps ax | grep -i 'kafka.Kafka' | grep -v grep | awk '{print $1}'`
+        pid=`ps ax | grep -i 'ui' | grep -v grep | awk '{print $1}'`
         if [ -n "$pid" ]
           then
           kill -9 $pid
         else
-          echo "Kafka was not Running"
+          echo "Storm ui was not Running"
         fi
         ;;
   restart)
@@ -31,12 +31,12 @@ case "$1" in
         $0 start
         ;;
   status)
-        pid=`ps ax | grep -i 'kafka.Kafka' | grep -v grep | awk '{print $1}'`
+        pid=`ps ax | grep -i 'ui' | grep -v grep | awk '{print $1}'`
         if [ -n "$pid" ]
           then
-          echo "Kafka is Running as PID: $pid"
+          echo "Storm ui is Running as PID: $pid"
         else
-          echo "Kafka is not Running"
+          echo "Storm ui is not Running"
         fi
         ;;
   *)

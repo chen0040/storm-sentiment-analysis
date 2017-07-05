@@ -24,6 +24,26 @@ Vagrant.configure("2") do |config|
         kafka1.vm.hostname = "kafka1"
     end
 
+    config.vm.define "stormnimbus1" do |stormnimbus1|
+        stormnimbus1.vm.network "private_network", ip: vagrantConfig['ip5']
+        stormnimbus1.vm.hostname = "stormnimbus1"
+    end
+
+    config.vm.define "stormslave1" do |stormslave1|
+        stormslave1.vm.network "private_network", ip: vagrantConfig['ip6']
+        stormslave1.vm.hostname = "stormslave1"
+    end
+
+    config.vm.define "stormslave2" do |stormslave2|
+        stormslave2.vm.network "private_network", ip: vagrantConfig['ip7']
+        stormslave2.vm.hostname = "stormslave2"
+    end
+
+    config.vm.define "stormslave3" do |stormslave3|
+        stormslave3.vm.network "private_network", ip: vagrantConfig['ip8']
+        stormslave3.vm.hostname = "stormslave3"
+    end
+
     config.vm.synced_folder "src/", "/home/vagrant/src", owner:"vagrant", group: "vagrant"
     config.vm.synced_folder "devops/", "/home/vagrant/devops", owner:"vagrant", group: "vagrant"
 
@@ -74,6 +94,7 @@ Vagrant.configure("2") do |config|
         kafka1.vm.provision "shell", inline: "wget http://www-eu.apache.org/dist/kafka/0.11.0.0/kafka_2.11-0.11.0.0.tgz"
         kafka1.vm.provision "shell", inline: "tar -xvzf kafka_2.11-0.11.0.0.tgz"
         kafka1.vm.provision "shell", inline: "cp -R /home/vagrant/kafka_2.11-0.11.0.0 /opt"
+        kafka1.vm.provision "shell", inline: "chmod -R 777 /opt/kafka_2.11-0.11.0.0"
         kafka1.vm.provision "shell", inline: "ln -sf /opt/kafka_2.11-0.11.0.0 /opt/kafka"
         kafka1.vm.provision "shell", inline: "rm -f /opt/kafka/config/server.properties"
         kafka1.vm.provision "shell", inline: "cp /home/vagrant/devops/kafka/server.properties /opt/kafka/config/server.properties"
@@ -83,7 +104,68 @@ Vagrant.configure("2") do |config|
         kafka1.vm.provision "shell", inline: "sudo service kafka start"
     end
 
+    config.vm.define "stormnimbus1" do |stormnimbus1|
+        stormnimbus1.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/storm/hosts.nimbus1 >> /etc/hosts"
+        stormnimbus1.vm.provision "shell", inline: "wget http://www-eu.apache.org/dist/storm/apache-storm-0.9.1-incubating/apache-storm-0.9.1-incubating.tar.gz"
+        stormnimbus1.vm.provision "shell", inline: "tar -xvzf apache-storm-0.9.1-incubating.tar.gz"
+        stormnimbus1.vm.provision "shell", inline: "cp -R /home/vagrant/apache-storm-0.9.1-incubating /opt"
+        stormnimbus1.vm.provision "shell", inline: "chmod -R 777 /opt/apache-storm-0.9.1-incubating"
+        stormnimbus1.vm.provision "shell", inline: "ln -sf /opt/apache-storm-0.9.1-incubating /opt/storm"
+        stormnimbus1.vm.provision "shell", inline: "rm -f /opt/storm/conf/storm.yaml"
+        stormnimbus1.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/storm.yaml /opt/storm/conf/storm.yaml"
+        stormnimbus1.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/init.d-nimbus /etc/init.d/storm-nimbus"
+        stormnimbus1.vm.provision "shell", inline: "chmod 755 /etc/init.d/storm-nimbus"
+        stormnimbus1.vm.provision "shell", inline: "sudo update-rc.d storm-nimbus defaults"
+        stormnimbus1.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/init.d-ui /etc/init.d/storm-ui"
+        stormnimbus1.vm.provision "shell", inline: "chmod 755 /etc/init.d/storm-ui"
+        stormnimbus1.vm.provision "shell", inline: "sudo update-rc.d storm-ui defaults"
+        stormnimbus1.vm.provision "shell", inline: "sudo service storm-nimbus start"
+        stormnimbus1.vm.provision "shell", inline: "sudo service storm-ui start"
+    end
+    
+    config.vm.define "stormslave1" do |stormslave1|
+        stormslave1.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/storm/hosts.slave1 >> /etc/hosts"
+        stormslave1.vm.provision "shell", inline: "wget http://www-eu.apache.org/dist/storm/apache-storm-0.9.1-incubating/apache-storm-0.9.1-incubating.tar.gz"
+        stormslave1.vm.provision "shell", inline: "tar -xvzf apache-storm-0.9.1-incubating.tar.gz"
+        stormslave1.vm.provision "shell", inline: "cp -R /home/vagrant/apache-storm-0.9.1-incubating /opt"
+        stormslave1.vm.provision "shell", inline: "chmod -R 777 /opt/apache-storm-0.9.1-incubating"
+        stormslave1.vm.provision "shell", inline: "ln -sf /opt/apache-storm-0.9.1-incubating /opt/storm"
+        stormslave1.vm.provision "shell", inline: "rm -f /opt/storm/conf/storm.yaml"
+        stormslave1.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/storm.yaml /opt/storm/conf/storm.yaml"
+        stormslave1.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/init.d-supervisor /etc/init.d/storm-supervisor"
+        stormslave1.vm.provision "shell", inline: "chmod 755 /etc/init.d/storm-supervisor"
+        stormslave1.vm.provision "shell", inline: "sudo update-rc.d storm-supervisor defaults"
+        stormslave1.vm.provision "shell", inline: "sudo service storm-supervisor start"
+    end
 
-
+    config.vm.define "stormslave2" do |stormslave2|
+        stormslave2.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/storm/hosts.slave2 >> /etc/hosts"
+        stormslave2.vm.provision "shell", inline: "wget http://www-eu.apache.org/dist/storm/apache-storm-0.9.1-incubating/apache-storm-0.9.1-incubating.tar.gz"
+        stormslave2.vm.provision "shell", inline: "tar -xvzf apache-storm-0.9.1-incubating.tar.gz"
+        stormslave2.vm.provision "shell", inline: "cp -R /home/vagrant/apache-storm-0.9.1-incubating /opt"
+        stormslave2.vm.provision "shell", inline: "chmod -R 777 /opt/apache-storm-0.9.1-incubating"
+        stormslave2.vm.provision "shell", inline: "ln -sf /opt/apache-storm-0.9.1-incubating /opt/storm"
+        stormslave2.vm.provision "shell", inline: "rm -f /opt/storm/conf/storm.yaml"
+        stormslave2.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/storm.yaml /opt/storm/conf/storm.yaml"
+        stormslave2.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/init.d-supervisor /etc/init.d/storm-supervisor"
+        stormslave2.vm.provision "shell", inline: "chmod 755 /etc/init.d/storm-supervisor"
+        stormslave2.vm.provision "shell", inline: "sudo update-rc.d storm-supervisor defaults"
+        stormslave2.vm.provision "shell", inline: "sudo service storm-supervisor start"
+    end
+    
+    config.vm.define "stormslave3" do |stormslave3|
+        stormslave3.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/storm/hosts.slave3 >> /etc/hosts"
+        stormslave3.vm.provision "shell", inline: "wget http://www-eu.apache.org/dist/storm/apache-storm-0.9.1-incubating/apache-storm-0.9.1-incubating.tar.gz"
+        stormslave3.vm.provision "shell", inline: "tar -xvzf apache-storm-0.9.1-incubating.tar.gz"
+        stormslave3.vm.provision "shell", inline: "cp -R /home/vagrant/apache-storm-0.9.1-incubating /opt"
+        stormslave3.vm.provision "shell", inline: "chmod -R 777 /opt/apache-storm-0.9.1-incubating"
+        stormslave3.vm.provision "shell", inline: "ln -sf /opt/apache-storm-0.9.1-incubating /opt/storm"
+        stormslave3.vm.provision "shell", inline: "rm -f /opt/storm/conf/storm.yaml"
+        stormslave3.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/storm.yaml /opt/storm/conf/storm.yaml"
+        stormslave3.vm.provision "shell", inline: "cp /home/vagrant/devops/storm/init.d-supervisor /etc/init.d/storm-supervisor"
+        stormslave3.vm.provision "shell", inline: "chmod 755 /etc/init.d/storm-supervisor"
+        stormslave3.vm.provision "shell", inline: "sudo update-rc.d storm-supervisor defaults"
+        stormslave3.vm.provision "shell", inline: "sudo service storm-supervisor start"
+    end
 
 end
