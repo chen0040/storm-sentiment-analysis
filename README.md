@@ -6,7 +6,16 @@ Sentiment analysis with Spring and Storm
 
 Git clone this project and cd to its root directory
 
-First start the cluster by running the following command:
+### Test locally
+
+Please refers to the StormAppUnitTest.java in the test/java folder on how to test the storm topology locally
+
+### Submit storm topology to remote storm cluster
+
+To submit the storm topology to remote storm cluster, we need to have a devops environment that set up the 
+remote storm cluster. 
+
+You can start the remote storm cluster by running the following command from the root directory of this project:
  
 ```bash
 vagrant up
