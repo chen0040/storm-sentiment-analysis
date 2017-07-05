@@ -12,7 +12,7 @@ case "$1" in
   start)
         # Start daemon.
         echo "Starting $DAEMON_NAME";
-        $DAEMON_PATH/storm supervisor
+        nohup $DAEMON_PATH/storm supervisor 1>/dev/null 2>/dev/null &
         ;;
   stop)
         # Stop daemons.
