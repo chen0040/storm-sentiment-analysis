@@ -29,9 +29,9 @@ Vagrant.configure("2") do |config|
 
     # VirtualBox specific settings
     config.vm.provider "virtualbox" do |vb|
-    vb.gui = false
-    vb.memory = "1024"
-    vb.cpus = 1
+        vb.gui = false
+        vb.memory = "1024"
+        vb.cpus = 1
     end
 
     config.vm.provision "shell", inline: "sudo apt-get update -y"
