@@ -72,7 +72,7 @@ Vagrant.configure("2") do |config|
     config.vm.define "kafka1" do |kafka1|
         kafka1.vm.provision "shell", inline: "sudo cat /home/vagrant/devops/kafka/hosts.1 >> /etc/hosts"
         kafka1.vm.provision "shell", inline: "wget http://www-eu.apache.org/dist/kafka/0.11.0.0/kafka_2.11-0.11.0.0.tgz"
-        kafka1.vm.provision "shell", inline: "tar -xvzf kafka_2.11-0.11.0.0.tgz --strip 1"
+        kafka1.vm.provision "shell", inline: "tar -xvzf kafka_2.11-0.11.0.0.tgz"
         kafka1.vm.provision "shell", inline: "cp -R /home/vagrant/kafka_2.11-0.11.0.0 /opt"
         kafka1.vm.provision "shell", inline: "ln -s /opt/kafka_2.11-0.10.0.1 /opt/kafka"
         kafka1.vm.provision "shell", inline: "rm -f /opt/kafka/config/server.properties"
