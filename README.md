@@ -31,6 +31,10 @@ This will start:
     * stormslave2:192.168.10.19
     * stormslave3:192.168.10.20
     
+Once the vagrant VMs are up and running, you can go to your host computer and enter 
+the url http://192.168.10.17:8080 to your browse on the host computer. This will show the storm UI.
+
+
 
 
 
