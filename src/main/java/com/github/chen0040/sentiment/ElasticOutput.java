@@ -1,18 +1,11 @@
 package com.github.chen0040.sentiment;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -21,10 +14,14 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
-
 import storm.trident.operation.BaseFilter;
 import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 public class ElasticOutput extends BaseFilter{
 
@@ -46,6 +43,7 @@ public class ElasticOutput extends BaseFilter{
 
 	public boolean isKeep(TridentTuple tuple) {
 		Boolean prediction =tuple.getBooleanByField("prediction");
+		Boolean label = tuple.getBooleanByField("label");
 		String comment=tuple.getStringByField("text");
 		System.out.println(comment + " >> " + prediction);
 		
@@ -60,7 +58,12 @@ public class ElasticOutput extends BaseFilter{
 			
 			CloseableHttpResponse response=null;
 			try{
-				String json = "{\"text\":\""+comment+"\", \"prediction\":\""+prediction+"\", \"postTime\":\""+dateString+"\"}";
+				TwitterComment tc = new TwitterComment();
+				tc.setText(comment);
+				tc.setPostTime(dateString);
+				tc.setPrediction(prediction);
+				tc.setLabel(label);
+				String json = JSON.toJSONString(tc);
 				System.out.println(json);
 				StringEntity params=new StringEntity(json);
 				params.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));

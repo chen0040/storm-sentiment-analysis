@@ -2,6 +2,7 @@
 *.iml
 target/
 .vagrant/
+devops/bin/*.jar
 
 # Compiled class file
 *.class

@@ -13,7 +13,7 @@ Invoke-Expression -Command:"mvn -f pom.xml clean package -P$profile -U"
 
 $proj="java-zookeeper-coordinator"
 $source=$PSScriptRoot + "/../target/" + $proj + ".jar"
-$dest=$PSScriptRoot + "/../bin/" + $proj + ".jar"
+$dest=$PSScriptRoot + "/../devops/bin/" + $proj + ".jar"
 copy $source $dest
 
 cd $currentPath
