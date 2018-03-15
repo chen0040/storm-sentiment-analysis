@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
     end
 
     config.vm.provision "shell", inline: "sudo apt-get update -y"
-    config.vm.provision "shell", inline: "sudo apt-get upgrade -y"
+    config.vm.provision "shell", inline: 'DEBIAN_FRONTEND=noninteractive apt-get -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" upgrade'
     config.vm.provision "shell", inline: "sudo add-apt-repository -y ppa:webupd8team/java"
     config.vm.provision "shell", inline: "sudo apt-get update -y"
     config.vm.provision "shell", inline: "echo 'oracle-java8-installer shared/accepted-oracle-license-v1-1 select true' | sudo debconf-set-selections"
